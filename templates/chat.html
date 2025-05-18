@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Philo Club Bot</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #f0ece2;
+      margin: 0;
+      padding: 20px;
+      color: #2d2d2d;
+    }
+    h1 {
+      text-align: center;
+      color: #3e3e3e;
+    }
+    #chatbox {
+      width: 80%;
+      margin: 0 auto;
+      height: 400px;
+      overflow-y: scroll;
+      border: 1px solid #aaa;
+      padding: 10px;
+      background: #fff;
+    }
+    .message {
+      margin: 10px 0;
+    }
+    .user {
+      font-weight: bold;
+      color: #4a4a4a;
+    }
+    .bot {
+      color: #005f73;
+    }
+    #input {
+      width: 80%;
+      margin: 10px auto;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    input {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat with Philosopher</h1>
+  <div id="chatbox"></div>
+  <div id="input">
+    <input type="text" id="userInput" placeholder="ENTER::">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value;
+      if (!message) return;
+
+      const chatbox = document.getElementById("chatbox");
+      chatbox.innerHTML += `<div class="message"><span class="user">You:</span> ${message}</div>`;
+      input.value = "";
+
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+      chatbox.innerHTML += `<div class="message"><span class="bot">Philosopher:</span> ${data.reply}</div>`;
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
